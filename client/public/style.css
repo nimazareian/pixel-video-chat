@@ -1,0 +1,30 @@
+.body {
+	margin: 0;
+	padding: 0;
+}
+
+#user-video {
+	width: 5rem;
+}
+
+#partner-video {
+	width: 100%;
+}
+
+.container {
+	height: 100vh;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.row {
+	display: flex;
+	width: 100%;
+}
+
+.video {
+	border: 1px solid blue;
+	width: 50%;
+	height: 50%;
+}
