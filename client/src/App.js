@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import Peer from "simple-peer";
 
+import ActionBar from "./ActionBar";
+
 function App() {
 	const [yourID, setYourID] = useState("");
 	const [users, setUsers] = useState({});
@@ -118,6 +120,7 @@ function App() {
 			<div className="row">
 				{UserVideo}
 				{PartnerVideo}
+				<ActionBar />
 			</div>
 			<div className="row">
 				{Object.keys(users).map((key) => {
