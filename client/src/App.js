@@ -115,12 +115,24 @@ function App() {
 		);
 	}
 
+	function muteMic(isMute) {
+		userVideo.current.srcObject.getAudioTracks()[0].enabled = isMute;
+	}
+
+	function cameraOff(isCameraOff) {
+		userVideo.current.srcObject.getVideoTracks()[0].enabled = isCameraOff;
+	}
+
+	function hangup() {
+		// hangup
+	}
+
 	return (
 		<div>
 			<div className="row">
 				{UserVideo}
 				{PartnerVideo}
-				<ActionBar />
+				<ActionBar muteMic={muteMic} cameraOff={cameraOff} hangup={hangup} />
 			</div>
 			<div className="row">
 				{Object.keys(users).map((key) => {

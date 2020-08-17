@@ -28,7 +28,7 @@ body {
 /* Action Bar and Buttons/Icons */
 .action-button {
 	padding: 5px;
-	margin: 0 5px;
+	margin: 0 7px;
 	border-radius: 10px;
 	-webkit-backdrop-filter: blur(5px);
 	backdrop-filter: blur(5px);

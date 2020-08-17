@@ -2,10 +2,9 @@ import React, { useState } from "react";
 
 import ActionButton from "./ActionButton";
 
-function ActionBar() {
+function ActionBar(props) {
 	var [isMute, setIsMute] = useState(false);
 	var [isCameraOff, setIsCameraOff] = useState(false);
-	var [inVideoChat, setInVideoChat] = useState(true);
 
 	return (
 		<div id="action-bar">
@@ -14,6 +13,7 @@ function ActionBar() {
 				tooltip={isMute ? "Unmute" : "Mute"}
 				onClick={() => {
 					setIsMute(!isMute);
+					props.muteMic(isMute);
 				}}
 			></ActionButton>
 
@@ -22,6 +22,7 @@ function ActionBar() {
 				tooltip={isCameraOff ? "Camera On" : "Camera Off"}
 				onClick={() => {
 					setIsCameraOff(!isCameraOff);
+					props.cameraOff(isCameraOff);
 				}}
 			></ActionButton>
 
@@ -29,7 +30,7 @@ function ActionBar() {
 				name="telephone"
 				tooltip="Hang-up"
 				onClick={() => {
-					console.log("clicked");
+					props.hangup();
 				}}
 			></ActionButton>
 		</div>
