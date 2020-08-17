@@ -22,6 +22,9 @@ function App() {
 	const partnerVideo = useRef();
 	const socket = useRef();
 
+	// var userPeer;
+	// var partnerPeer;
+
 	// useEffect(function, array) Runs a function everytime an element re-renders. If no array is included, function will run everytime page is re-rendered
 	// If the array includes a useState variable (i.e. [var]), then everytime the value of var changes, the function runs
 	// If an empty array is passed, then the function runs (on mount) initially, and never runs again since the value cant be updated
@@ -50,19 +53,19 @@ function App() {
 	}, []);
 
 	function callPeer(id) {
-		const peer = new Peer({
+		var userPeer = new Peer({
 			initiator: true,
 			trickle: false,
 			stream: stream,
 		});
 
 		// one peer sends a signal to another, and once accepted the other peer will send back their data
-		peer.on("signal", (data) => {
+		userPeer.on("signal", (data) => {
 			socket.current.emit("callUser", { userToCall: id, signalData: data, from: yourID });
 		});
 
 		// incoming stream
-		peer.on("stream", (stream) => {
+		userPeer.on("stream", (stream) => {
 			// is our partner being streamed?
 			if (partnerVideo.current) {
 				partnerVideo.current.srcObject = stream;
@@ -72,35 +75,37 @@ function App() {
 		// when user accepts call, they have to send their own data to other user
 		socket.current.on("callAccepted", (signal) => {
 			setCallAccepted(true);
-			peer.signal(signal); // Important - other user to receive signal
+			userPeer.signal(signal); // Important - other user to receive signal
 		});
 	}
 
 	function acceptCall() {
 		setCallAccepted(true);
 		// peer receiving the call
-		const peer = new Peer({
+		var partnerPeer = new Peer({
 			initiator: false,
 			trickle: false,
 			stream: stream,
 		});
-		peer.on("signal", (data) => {
+		partnerPeer.on("signal", (data) => {
 			socket.current.emit("acceptCall", { signal: data, to: caller });
 		});
 
-		peer.on("stream", (stream) => {
+		partnerPeer.on("stream", (stream) => {
 			partnerVideo.current.srcObject = stream;
 		});
 
-		peer.signal(callerSignal);
+		partnerPeer.signal(callerSignal);
 	}
 
 	let UserVideo;
+	// var [UserVideo, setUserVideo] = useState();
 	if (stream) {
 		UserVideo = <video className="video" id="user-video" playsInline muted ref={userVideo} autoPlay />; //<div className="video" playsInline muted ref={userVideo} autoPlay />;
 	}
 
 	let PartnerVideo;
+	// var [PartnerVideo, setPartnerVideo] = useState();
 	if (callAccepted) {
 		PartnerVideo = <video className="video" id="partner-video" playsInline ref={partnerVideo} autoPlay />;
 	}
@@ -124,22 +129,65 @@ function App() {
 	}
 
 	function hangup() {
-		// hangup
+		try {
+			setCallAccepted(false);
+
+			// partnerPeer.destory();
+
+			// close your peers video/audio
+			if (partnerVideo) {
+				partnerVideo.current.srcObject.getTracks().forEach(function (track) {
+					track.stop();
+				});
+			}
+			// setPartnerVideo(null);
+		} catch (err) {
+			console.log(err);
+			alert("Error while hangingup");
+			// e.printStackTrace();
+		}
+	}
+
+	function showActionbar() {
+		var actionbar = document.querySelector("#action-bar");
+
+		actionbar.classList.add("actionbar-animate-in");
+		if (actionbar.classList.contains("actionbar-animate-out")) {
+			actionbar.classList.remove("actionbar-animate-out");
+		}
+		console.log("show", actionbar);
+	}
+
+	function hideActionbar() {
+		var actionbar = document.querySelector("#action-bar");
+
+		actionbar.classList.add("actionbar-animate-out");
+		if (actionbar.classList.contains("actionbar-animate-in")) {
+			actionbar.classList.remove("actionbar-animate-in");
+		}
+		console.log("hide", actionbar);
 	}
 
 	return (
 		<div>
-			<div className="row">
+			<div className="row video-chat">
 				{UserVideo}
-				{PartnerVideo}
-				<ActionBar muteMic={muteMic} cameraOff={cameraOff} hangup={hangup} />
+				{callAccepted && PartnerVideo}
+				{callAccepted && (
+					<div id="mouse-move-area" onMouseOver={hideActionbar} onMouseOut={showActionbar}></div>
+				)}
+				{callAccepted && <ActionBar muteMic={muteMic} cameraOff={cameraOff} hangup={hangup}></ActionBar>}
 			</div>
 			<div className="row">
 				{Object.keys(users).map((key) => {
 					if (key === yourID) {
 						return null;
 					}
-					return <button onClick={() => callPeer(key)}>call {key}</button>;
+					return (
+						<button onClick={() => callPeer(key)} key={key}>
+							call {key}
+						</button>
+					);
 				})}
 			</div>
 			<div className="row">{incomingCall}</div>
