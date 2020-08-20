@@ -6,10 +6,6 @@ function ActionBar(props) {
 	var [isMute, setIsMute] = useState(false);
 	var [isCameraOff, setIsCameraOff] = useState(false);
 
-	// document.querySelector("#user-video").addEventListener("mousemove", () => {
-	// 	console.log("mousemoved");
-	// });
-
 	return (
 		<div>
 			<div id="action-bar">
