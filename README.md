@@ -5,7 +5,9 @@ This project uses WebRTC and Peer-to-peer (P2P) connection between users to allo
 React is used for the front end, with the nodeJS as the back-end server. 
 
 ## Live Demo
-You can view live demo of this project by going to: https://secret-woodland-90156.herokuapp.com/
+**Unfortunately Heroku has stopped hosting projects with their free tier and the live demo does not work anymore**
+
+~~You can view live demo of this project by going to: https://secret-woodland-90156.herokuapp.com/~~
 
 #### Demo Tutorial
 - Make sure you allow for the website to access your camera and microphone for the demo to work.
